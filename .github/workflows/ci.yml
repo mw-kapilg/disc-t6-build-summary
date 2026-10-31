@@ -18,6 +18,17 @@ jobs:
           release: latest
 
       - name: Run MATLAB build
+        id: build
         uses: matlab-actions/run-build@v3
         with:
           tasks: check test
+
+      - name: Publish build and test summary
+        if: ${{ !cancelled() }}
+        run: |
+          if [ "${{ steps.build.outcome }}" = "success" ]; then
+            echo "## MATLAB Build: :white_check_mark: passed (tasks: check test)" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "## MATLAB Build: :x: ${{ steps.build.outcome }} (tasks: check test)" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          python3 .github/scripts/test_summary.py results/test-results.xml

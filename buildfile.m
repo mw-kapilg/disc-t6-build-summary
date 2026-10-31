@@ -9,7 +9,8 @@ plan = buildplan(localfunctions);
 addpath(fullfile(plan.RootFolder, "src"));
 
 plan("check") = CodeIssuesTask("src");
-plan("test") = TestTask("tests", SourceFiles="src");
+plan("test") = TestTask("tests", SourceFiles="src", ...
+    TestResults=fullfile("results", "test-results.xml"));
 plan("test").Dependencies = "check";
 
 plan.DefaultTasks = "test";
